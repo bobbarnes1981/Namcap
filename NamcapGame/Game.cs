@@ -25,6 +25,14 @@ namespace NamcapGame
 
         private Surface m_npc;
 
+        private Surface m_pc1;
+
+        private Surface m_pc2;
+
+        private Surface m_pc3;
+
+        private Surface m_pc4;
+
         public Game()
         {
             // 4 ghosts - tab to switch, arrow keys to move
@@ -63,6 +71,22 @@ namespace NamcapGame
             m_npc = new Surface(m_path + "Images\\npc.png").Convert(m_video, true, true);
             m_npc.Transparent = true;
             m_npc.TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pc1 = new Surface(m_path + "Images\\pc1.png").Convert(m_video, true, true);
+            m_pc1.Transparent = true;
+            m_pc1.TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pc2 = new Surface(m_path + "Images\\pc2.png").Convert(m_video, true, true);
+            m_pc2.Transparent = true;
+            m_pc2.TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pc3 = new Surface(m_path + "Images\\pc3.png").Convert(m_video, true, true);
+            m_pc3.Transparent = true;
+            m_pc3.TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pc4 = new Surface(m_path + "Images\\pc4.png").Convert(m_video, true, true);
+            m_pc4.Transparent = true;
+            m_pc4.TransparentColor = Color.FromArgb(255, 0, 220);
         }
 
         public void Run()
@@ -90,6 +114,14 @@ namespace NamcapGame
             }
 
             m_video.Blit(m_npc, new Point(13*8, (22*8)+4));
+
+            m_video.Blit(m_pc1, new Point(11 * 8, (12 * 8) + 4));
+
+            m_video.Blit(m_pc2, new Point(15 * 8, (12 * 8) + 4));
+
+            m_video.Blit(m_pc3, new Point(11 * 8, (14 * 8) + 4));
+
+            m_video.Blit(m_pc4, new Point(15 * 8, (14 * 8) + 4));
 
             m_video.Update();
         }
