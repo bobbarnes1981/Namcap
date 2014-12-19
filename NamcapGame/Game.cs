@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using SdlDotNet.Core;
 using SdlDotNet.Graphics;
+using SdlDotNet.Input;
 
 namespace NamcapGame
 {
@@ -96,6 +97,8 @@ namespace NamcapGame
             loadImages();
 
             Events.Tick += new EventHandler<TickEventArgs>(ApplicationTickEventHandler);
+            Events.KeyboardDown += new EventHandler<KeyboardEventArgs>(KeyboardEventHandler);
+            Events.KeyboardUp += new EventHandler<KeyboardEventArgs>(KeyboardEventHandler);
             Events.Quit += new EventHandler<QuitEventArgs>(ApplicationQuitEventHandler);
             Events.Run();
         }
@@ -124,6 +127,24 @@ namespace NamcapGame
             m_video.Blit(m_pc4, new Point(15 * 8, (14 * 8) + 4));
 
             m_video.Update();
+        }
+
+        private void KeyboardEventHandler(object sender, KeyboardEventArgs args)
+        {
+            Console.WriteLine("{0} {1}", args.Key, args.Down);
+            switch (args.Key)
+            {
+                case Key.DownArrow:
+                    break;
+                case Key.UpArrow:
+                    break;
+                case Key.LeftArrow:
+                    break;
+                case Key.RightArrow:
+                    break;
+                case Key.Tab:
+                    break;
+            }
         }
 
         private void ApplicationQuitEventHandler(object sender, QuitEventArgs args)
