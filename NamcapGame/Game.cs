@@ -62,7 +62,7 @@ namespace NamcapGame
 
             m_npc = new Surface(m_path + "Images\\npc.png").Convert(m_video, true, true);
             m_npc.Transparent = true;
-            m_npc.TransparentColor = Color.FromArgb(255, 0, 255);
+            m_npc.TransparentColor = Color.FromArgb(255, 0, 220);
         }
 
         public void Run()
