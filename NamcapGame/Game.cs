@@ -22,17 +22,19 @@ namespace NamcapGame
 
         private int m_height = 31;
 
+        private int m_scale = 8;
+
         private Dictionary<char, Surface> m_cells;
 
         private Surface m_npc;
 
-        private Surface m_pc1;
+        private Point m_npcLocation;
 
-        private Surface m_pc2;
+        private int m_selectedPlayer = 0;
 
-        private Surface m_pc3;
+        private Surface[] m_pc;
 
-        private Surface m_pc4;
+        private Point[] m_pcLocation;
 
         public Game()
         {
@@ -50,6 +52,14 @@ namespace NamcapGame
                     m_grid[x, y] = data[y][x];
                 }
             }
+
+            m_npcLocation = new Point(13 * m_scale, (22 * m_scale) + 4);
+
+            m_pcLocation = new Point[4];
+            m_pcLocation[0] = new Point(11 * m_scale, (12 * m_scale) + 4);
+            m_pcLocation[1] = new Point(15 * m_scale, (12 * m_scale) + 4);
+            m_pcLocation[2] = new Point(11 * m_scale, (14 * m_scale) + 4);
+            m_pcLocation[3] = new Point(15 * m_scale, (14 * m_scale) + 4);
         }
 
         private void loadImages()
@@ -73,26 +83,33 @@ namespace NamcapGame
             m_npc.Transparent = true;
             m_npc.TransparentColor = Color.FromArgb(255, 0, 220);
 
-            m_pc1 = new Surface(m_path + "Images\\pc1.png").Convert(m_video, true, true);
-            m_pc1.Transparent = true;
-            m_pc1.TransparentColor = Color.FromArgb(255, 0, 220);
+            m_pc = new Surface[4];
 
-            m_pc2 = new Surface(m_path + "Images\\pc2.png").Convert(m_video, true, true);
-            m_pc2.Transparent = true;
-            m_pc2.TransparentColor = Color.FromArgb(255, 0, 220);
+            m_pc[0] = new Surface(m_path + "Images\\pc1.png").Convert(m_video, true, true);
+            m_pc[0].Transparent = true;
+            m_pc[0].TransparentColor = Color.FromArgb(255, 0, 220);
 
-            m_pc3 = new Surface(m_path + "Images\\pc3.png").Convert(m_video, true, true);
-            m_pc3.Transparent = true;
-            m_pc3.TransparentColor = Color.FromArgb(255, 0, 220);
+            m_pc[1] = new Surface(m_path + "Images\\pc2.png").Convert(m_video, true, true);
+            m_pc[1].Transparent = true;
+            m_pc[1].TransparentColor = Color.FromArgb(255, 0, 220);
 
-            m_pc4 = new Surface(m_path + "Images\\pc4.png").Convert(m_video, true, true);
-            m_pc4.Transparent = true;
-            m_pc4.TransparentColor = Color.FromArgb(255, 0, 220);
+            m_pc[2] = new Surface(m_path + "Images\\pc3.png").Convert(m_video, true, true);
+            m_pc[2].Transparent = true;
+            m_pc[2].TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pc[3] = new Surface(m_path + "Images\\pc4.png").Convert(m_video, true, true);
+            m_pc[3].Transparent = true;
+            m_pc[3].TransparentColor = Color.FromArgb(255, 0, 220);
+        }
+
+        private void movePlayer(int playerId, int x, int y)
+        {
+            
         }
 
         public void Run()
         {
-            m_video = Video.SetVideoMode(m_width * 8, m_height * 8, 32, false, false, false, true);
+            m_video = Video.SetVideoMode(m_width * m_scale, m_height * m_scale, 32, false, false, false, true);
 
             loadImages();
 
@@ -111,20 +128,17 @@ namespace NamcapGame
                 {
                     if (m_cells.ContainsKey(m_grid[x, y]))
                     {
-                        m_video.Blit(m_cells[m_grid[x, y]], new Point(x*8, y*8));
+                        m_video.Blit(m_cells[m_grid[x, y]], new Point(x * m_scale, y * m_scale));
                     }
                 }
             }
 
-            m_video.Blit(m_npc, new Point(13*8, (22*8)+4));
+            m_video.Blit(m_npc, m_npcLocation);
 
-            m_video.Blit(m_pc1, new Point(11 * 8, (12 * 8) + 4));
-
-            m_video.Blit(m_pc2, new Point(15 * 8, (12 * 8) + 4));
-
-            m_video.Blit(m_pc3, new Point(11 * 8, (14 * 8) + 4));
-
-            m_video.Blit(m_pc4, new Point(15 * 8, (14 * 8) + 4));
+            for (int i = 0; i < 4; i++)
+            {
+                m_video.Blit(m_pc[i], m_pcLocation[i]);
+            }
 
             m_video.Update();
         }
@@ -135,14 +149,26 @@ namespace NamcapGame
             switch (args.Key)
             {
                 case Key.DownArrow:
+                    movePlayer(m_selectedPlayer, 0, 1);
                     break;
                 case Key.UpArrow:
+                    movePlayer(m_selectedPlayer, 0, -1);
                     break;
                 case Key.LeftArrow:
+                    movePlayer(m_selectedPlayer, -1, 0);
                     break;
                 case Key.RightArrow:
+                    movePlayer(m_selectedPlayer, 1, 0);
                     break;
                 case Key.Tab:
+                    if (m_selectedPlayer == 4)
+                    {
+                        m_selectedPlayer = 0;
+                    }
+                    else
+                    {
+                        m_selectedPlayer++;
+                    }
                     break;
             }
         }
