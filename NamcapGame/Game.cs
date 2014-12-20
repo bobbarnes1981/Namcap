@@ -26,15 +26,11 @@ namespace NamcapGame
 
         private Dictionary<char, Surface> m_cells;
 
-        private Surface m_npc;
-
-        private Point m_npcLocation;
+        private Sprite m_npc;
 
         private int m_selectedPlayer = 0;
 
-        private Surface[] m_pc;
-
-        private Point[] m_pcLocation;
+        private Sprite[] m_pc;
 
         public Game()
         {
@@ -52,17 +48,9 @@ namespace NamcapGame
                     m_grid[x, y] = data[y][x];
                 }
             }
-
-            m_npcLocation = new Point(13 * m_scale, (22 * m_scale) + 4);
-
-            m_pcLocation = new Point[4];
-            m_pcLocation[0] = new Point(11 * m_scale, (12 * m_scale) + 4);
-            m_pcLocation[1] = new Point(15 * m_scale, (12 * m_scale) + 4);
-            m_pcLocation[2] = new Point(11 * m_scale, (14 * m_scale) + 4);
-            m_pcLocation[3] = new Point(15 * m_scale, (14 * m_scale) + 4);
         }
 
-        private void loadImages()
+        private void loadTiles()
         {
             m_cells = new Dictionary<char, Surface>();
 
@@ -78,49 +66,49 @@ namespace NamcapGame
             m_cells.Add('<', new Surface(m_path + "Images\\cbl.png").Convert(m_video, true, false));
             m_cells.Add('>', new Surface(m_path + "Images\\cbr.png").Convert(m_video, true, false));
             m_cells.Add('+', new Surface(m_path + "Images\\hdoorb.png").Convert(m_video, true, false));
-
-            m_npc = new Surface(m_path + "Images\\npc.png").Convert(m_video, true, true);
-            m_npc.Transparent = true;
-            m_npc.TransparentColor = Color.FromArgb(255, 0, 220);
-
-            m_pc = new Surface[4];
-
-            m_pc[0] = new Surface(m_path + "Images\\pc1.png").Convert(m_video, true, true);
-            m_pc[0].Transparent = true;
-            m_pc[0].TransparentColor = Color.FromArgb(255, 0, 220);
-
-            m_pc[1] = new Surface(m_path + "Images\\pc2.png").Convert(m_video, true, true);
-            m_pc[1].Transparent = true;
-            m_pc[1].TransparentColor = Color.FromArgb(255, 0, 220);
-
-            m_pc[2] = new Surface(m_path + "Images\\pc3.png").Convert(m_video, true, true);
-            m_pc[2].Transparent = true;
-            m_pc[2].TransparentColor = Color.FromArgb(255, 0, 220);
-
-            m_pc[3] = new Surface(m_path + "Images\\pc4.png").Convert(m_video, true, true);
-            m_pc[3].Transparent = true;
-            m_pc[3].TransparentColor = Color.FromArgb(255, 0, 220);
         }
 
-        private void movePlayer(int playerId, int x, int y)
+        private void loadSprites()
         {
-            
+            m_npc = new Sprite(
+                new Surface(m_path + "Images\\npc.png").Convert(m_video, true, true),
+                new Point(13 * m_scale, (22 * m_scale) + 4),
+                40);
+            m_npc.Image.Transparent = true;
+            m_npc.Image.TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pc = new Sprite[4];
+
+            m_pc[0] = new Sprite(
+                new Surface(m_path + "Images\\pc1.png").Convert(m_video, true, true),
+                new PointF(11 * m_scale, (12 * m_scale) + 4),
+                30);
+            m_pc[0].Image.Transparent = true;
+            m_pc[0].Image.TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pc[1] = new Sprite(
+                new Surface(m_path + "Images\\pc2.png").Convert(m_video, true, true),
+                new PointF(15 * m_scale, (12 * m_scale) + 4),
+                30);
+            m_pc[1].Image.Transparent = true;
+            m_pc[1].Image.TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pc[2] = new Sprite(
+                new Surface(m_path + "Images\\pc3.png").Convert(m_video, true, true),
+                new PointF(11 * m_scale, (14 * m_scale) + 4),
+                30);
+            m_pc[2].Image.Transparent = true;
+            m_pc[2].Image.TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pc[3] = new Sprite(
+                new Surface(m_path + "Images\\pc4.png").Convert(m_video, true, true),
+                new PointF(15 * m_scale, (14 * m_scale) + 4),
+                30);
+            m_pc[3].Image.Transparent = true;
+            m_pc[3].Image.TransparentColor = Color.FromArgb(255, 0, 220);
         }
 
-        public void Run()
-        {
-            m_video = Video.SetVideoMode(m_width * m_scale, m_height * m_scale, 32, false, false, false, true);
-
-            loadImages();
-
-            Events.Tick += new EventHandler<TickEventArgs>(ApplicationTickEventHandler);
-            Events.KeyboardDown += new EventHandler<KeyboardEventArgs>(KeyboardEventHandler);
-            Events.KeyboardUp += new EventHandler<KeyboardEventArgs>(KeyboardEventHandler);
-            Events.Quit += new EventHandler<QuitEventArgs>(ApplicationQuitEventHandler);
-            Events.Run();
-        }
-
-        private void ApplicationTickEventHandler(object sender, TickEventArgs args)
+        private void blitTiles()
         {
             for (int y = 0; y < m_height; y++)
             {
@@ -132,13 +120,62 @@ namespace NamcapGame
                     }
                 }
             }
+        }
 
-            m_video.Blit(m_npc, m_npcLocation);
+        private void blitSprites()
+        {
+            m_video.Blit(m_npc.Image, new Point((int)m_npc.Location.X, (int)m_npc.Location.Y));
 
             for (int i = 0; i < 4; i++)
             {
-                m_video.Blit(m_pc[i], m_pcLocation[i]);
+                m_video.Blit(m_pc[i].Image, new Point((int)m_pc[i].Location.X, (int)m_pc[i].Location.Y));
             }
+        }
+
+        private void movePlayer(float elapsed)
+        {
+            foreach (Sprite player in m_pc)
+            {
+                // collision detection with walls
+                // screen wrapping
+                player.Move(elapsed);
+            }
+        }
+
+        private void cyclePlayer()
+        {
+            if (m_selectedPlayer < m_pc.Length - 1)
+            {
+                m_selectedPlayer++;
+            }
+            else
+            {
+                m_selectedPlayer = 0;
+            }
+            Console.WriteLine("Selected player {0}", m_selectedPlayer);
+        }
+
+        public void Run()
+        {
+            m_video = Video.SetVideoMode(m_width * m_scale, m_height * m_scale, 32, false, false, false, true);
+
+            loadTiles();
+            loadSprites();
+
+            Events.Tick += new EventHandler<TickEventArgs>(ApplicationTickEventHandler);
+            Events.KeyboardDown += new EventHandler<KeyboardEventArgs>(KeyboardEventHandler);
+            Events.KeyboardUp += new EventHandler<KeyboardEventArgs>(KeyboardEventHandler);
+            Events.Quit += new EventHandler<QuitEventArgs>(ApplicationQuitEventHandler);
+            Events.Run();
+        }
+
+        private void ApplicationTickEventHandler(object sender, TickEventArgs args)
+        {
+            movePlayer(args.SecondsElapsed);
+
+            blitTiles();
+
+            blitSprites();
 
             m_video.Update();
         }
@@ -146,30 +183,10 @@ namespace NamcapGame
         private void KeyboardEventHandler(object sender, KeyboardEventArgs args)
         {
             Console.WriteLine("{0} {1}", args.Key, args.Down);
-            switch (args.Key)
+            m_pc[m_selectedPlayer].Direct(args.Key, args.Down);
+            if (args.Key == Key.Tab && args.Down)
             {
-                case Key.DownArrow:
-                    movePlayer(m_selectedPlayer, 0, 1);
-                    break;
-                case Key.UpArrow:
-                    movePlayer(m_selectedPlayer, 0, -1);
-                    break;
-                case Key.LeftArrow:
-                    movePlayer(m_selectedPlayer, -1, 0);
-                    break;
-                case Key.RightArrow:
-                    movePlayer(m_selectedPlayer, 1, 0);
-                    break;
-                case Key.Tab:
-                    if (m_selectedPlayer == 4)
-                    {
-                        m_selectedPlayer = 0;
-                    }
-                    else
-                    {
-                        m_selectedPlayer++;
-                    }
-                    break;
+                cyclePlayer();
             }
         }
 
