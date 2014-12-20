@@ -24,7 +24,7 @@ namespace NamcapGame
 
         private int m_scale = 8;
 
-        private Dictionary<char, Surface> m_cells;
+        private Dictionary<char, Surface> m_tiles;
 
         private Sprite m_npc;
 
@@ -52,20 +52,20 @@ namespace NamcapGame
 
         private void loadTiles()
         {
-            m_cells = new Dictionary<char, Surface>();
+            m_tiles = new Dictionary<char, Surface>();
 
-            m_cells.Add('[', new Surface(m_path + "Images\\vlinel.png").Convert(m_video, true, false));
-            m_cells.Add(']', new Surface(m_path + "Images\\vliner.png").Convert(m_video, true, false));
-            m_cells.Add('-', new Surface(m_path + "Images\\hlinet.png").Convert(m_video, true, false));
-            m_cells.Add('_', new Surface(m_path + "Images\\hlineb.png").Convert(m_video, true, false));
-            m_cells.Add(' ', new Surface(m_path + "Images\\empty.png").Convert(m_video, true, false));
-            m_cells.Add('@', new Surface(m_path + "Images\\pill.png").Convert(m_video, true, false));
-            m_cells.Add('.', new Surface(m_path + "Images\\pip.png").Convert(m_video, true, false));
-            m_cells.Add('/', new Surface(m_path + "Images\\ctl.png").Convert(m_video, true, false));
-            m_cells.Add('\\', new Surface(m_path + "Images\\ctr.png").Convert(m_video, true, false));
-            m_cells.Add('<', new Surface(m_path + "Images\\cbl.png").Convert(m_video, true, false));
-            m_cells.Add('>', new Surface(m_path + "Images\\cbr.png").Convert(m_video, true, false));
-            m_cells.Add('+', new Surface(m_path + "Images\\hdoorb.png").Convert(m_video, true, false));
+            m_tiles.Add('[', new Surface(m_path + "Images\\vlinel.png").Convert(m_video, true, false));
+            m_tiles.Add(']', new Surface(m_path + "Images\\vliner.png").Convert(m_video, true, false));
+            m_tiles.Add('-', new Surface(m_path + "Images\\hlinet.png").Convert(m_video, true, false));
+            m_tiles.Add('_', new Surface(m_path + "Images\\hlineb.png").Convert(m_video, true, false));
+            m_tiles.Add(' ', new Surface(m_path + "Images\\empty.png").Convert(m_video, true, false));
+            m_tiles.Add('@', new Surface(m_path + "Images\\pill.png").Convert(m_video, true, false));
+            m_tiles.Add('.', new Surface(m_path + "Images\\pip.png").Convert(m_video, true, false));
+            m_tiles.Add('/', new Surface(m_path + "Images\\ctl.png").Convert(m_video, true, false));
+            m_tiles.Add('\\', new Surface(m_path + "Images\\ctr.png").Convert(m_video, true, false));
+            m_tiles.Add('<', new Surface(m_path + "Images\\cbl.png").Convert(m_video, true, false));
+            m_tiles.Add('>', new Surface(m_path + "Images\\cbr.png").Convert(m_video, true, false));
+            m_tiles.Add('+', new Surface(m_path + "Images\\hdoorb.png").Convert(m_video, true, false));
         }
 
         private void loadSprites()
@@ -114,9 +114,9 @@ namespace NamcapGame
             {
                 for (int x = 0; x < m_width; x++)
                 {
-                    if (m_cells.ContainsKey(m_grid[x, y]))
+                    if (m_tiles.ContainsKey(m_grid[x, y]))
                     {
-                        m_video.Blit(m_cells[m_grid[x, y]], new Point(x * m_scale, y * m_scale));
+                        m_video.Blit(m_tiles[m_grid[x, y]], new Point(x * m_scale, y * m_scale));
                     }
                 }
             }
@@ -124,21 +124,61 @@ namespace NamcapGame
 
         private void blitSprites()
         {
-            m_video.Blit(m_npc.Image, new Point((int)m_npc.Location.X, (int)m_npc.Location.Y));
+            blitSprite(m_npc);
 
             for (int i = 0; i < 4; i++)
             {
-                m_video.Blit(m_pc[i].Image, new Point((int)m_pc[i].Location.X, (int)m_pc[i].Location.Y));
+                blitSprite(m_pc[i]);
             }
+        }
+
+        private void blitSprite(Sprite sprite)
+        {
+            if (sprite.X > m_video.Width - sprite.Image.Width)
+            {
+                m_video.Blit(sprite.Image, new Point((int)sprite.X - m_video.Width, (int)sprite.Y));
+            }
+            if (sprite.Y > m_video.Height - sprite.Image.Height)
+            {
+                m_video.Blit(sprite.Image, new Point((int)sprite.X, (int)sprite.Y - m_video.Height));
+            }
+            m_video.Blit(sprite.Image, new Point((int)sprite.X, (int)sprite.Y));
         }
 
         private void movePlayer(float elapsed)
         {
             foreach (Sprite player in m_pc)
             {
-                // collision detection with walls
-                // screen wrapping
                 player.Move(elapsed);
+
+                // collision detection with walls, should probably do properly
+                char item = m_grid[(int)(player.X + 8) / 8, (int)(player.Y + 8) / 8];
+                if (item != '.' && item != ' ')
+                {
+                    Console.WriteLine("collision {0} {1}", DateTime.Now.Ticks, item);
+                }
+
+                wrapSprite(player);
+            }
+        }
+
+        private void wrapSprite(Sprite sprite)
+        {
+            if (sprite.X > m_video.Width)
+            {
+                sprite.X = 0;
+            }
+            if (sprite.X < 0)
+            {
+                sprite.X = m_video.Width;
+            }
+            if (sprite.Y > m_video.Height)
+            {
+                sprite.Y = 0;
+            }
+            if (sprite.Y < 0)
+            {
+                sprite.Y = m_video.Height;
             }
         }
 
@@ -152,7 +192,6 @@ namespace NamcapGame
             {
                 m_selectedPlayer = 0;
             }
-            Console.WriteLine("Selected player {0}", m_selectedPlayer);
         }
 
         public void Run()
@@ -182,7 +221,6 @@ namespace NamcapGame
 
         private void KeyboardEventHandler(object sender, KeyboardEventArgs args)
         {
-            Console.WriteLine("{0} {1}", args.Key, args.Down);
             m_pc[m_selectedPlayer].Direct(args.Key, args.Down);
             if (args.Key == Key.Tab && args.Down)
             {
