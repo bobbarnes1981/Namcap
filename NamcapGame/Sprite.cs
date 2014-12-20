@@ -15,8 +15,7 @@ namespace NamcapGame
         public float Speed { get; private set; }
         public Surface Image { get; private set; }
         public PointF Location { get { return m_location; } }
-        public Point Direction { get { return m_direction;} }
-
+        
         public Sprite(Surface surface, PointF location, float speed)
         {
             Image = surface;
@@ -66,10 +65,36 @@ namespace NamcapGame
 
         }
 
+        public float X
+        {
+            get
+            {
+                return m_location.X;
+            }
+
+            set
+            {
+                m_location.X = value;
+            }
+        }
+
+        public float Y
+        {
+            get
+            {
+                return m_location.Y;
+            }
+
+            set
+            {
+                m_location.Y = value;
+            }
+        }
+
         public void Move(float elapsed)
         {
-            m_location.X += Direction.X * Speed * elapsed;
-            m_location.Y += Direction.Y * Speed * elapsed;
+            m_location.X += m_direction.X * Speed * elapsed;
+            m_location.Y += m_direction.Y * Speed * elapsed;
         }
     }
 }
