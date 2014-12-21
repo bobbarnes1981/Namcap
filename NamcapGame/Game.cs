@@ -152,10 +152,15 @@ namespace NamcapGame
                 player.Move(elapsed);
 
                 // collision detection with walls, should probably do properly
-                char item = m_grid[(int)(player.X + 8) / 8, (int)(player.Y + 8) / 8];
-                if (item != '.' && item != ' ')
+                char item = m_grid[((int)(player.X + 5) / 8) % m_width, ((int)(player.Y + 5) / 8) % m_height];
+                if (item != '.' && item != ' ' && item != '+' && item != '@')
                 {
-                    Console.WriteLine("collision {0} {1}", DateTime.Now.Ticks, item);
+                    player.Reverse(elapsed);
+                }
+                item = m_grid[((int)(player.X + 11) / 8) % m_width, ((int)(player.Y + 11) / 8) % m_height];
+                if (item != '.' && item != ' ' && item != '+' && item != '@')
+                {
+                    player.Reverse(elapsed);
                 }
 
                 wrapSprite(player);
