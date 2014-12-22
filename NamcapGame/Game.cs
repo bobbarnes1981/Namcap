@@ -149,21 +149,42 @@ namespace NamcapGame
         {
             foreach (Sprite player in m_pc)
             {
-                player.Move(elapsed);
-
-                // collision detection with walls, should probably do properly
-                char item = m_grid[((int)(player.X + 5) / 8) % m_width, ((int)(player.Y + 5) / 8) % m_height];
-                if (item != '.' && item != ' ' && item != '+' && item != '@')
-                {
-                    player.Reverse(elapsed);
-                }
-                item = m_grid[((int)(player.X + 11) / 8) % m_width, ((int)(player.Y + 11) / 8) % m_height];
-                if (item != '.' && item != ' ' && item != '+' && item != '@')
-                {
-                    player.Reverse(elapsed);
-                }
+                collideSprite(player, elapsed);
 
                 wrapSprite(player);
+            }
+        }
+
+        private void collideSprite(Sprite sprite, float elapsed)
+        {
+            char item;
+
+            sprite.MoveX(elapsed);
+
+            // collision detection with walls, should probably do properly
+            item = m_grid[((int)(sprite.X + 5) / 8) % m_width, ((int)(sprite.Y + 5) / 8) % m_height];
+            if (item != '.' && item != ' ' && item != '+' && item != '@')
+            {
+                sprite.ReverseX(elapsed);
+            }
+            item = m_grid[((int)(sprite.X + 11) / 8) % m_width, ((int)(sprite.Y + 11) / 8) % m_height];
+            if (item != '.' && item != ' ' && item != '+' && item != '@')
+            {
+                sprite.ReverseX(elapsed);
+            }
+
+            sprite.MoveY(elapsed);
+
+            // collision detection with walls, should probably do properly
+            item = m_grid[((int)(sprite.X + 5) / 8) % m_width, ((int)(sprite.Y + 5) / 8) % m_height];
+            if (item != '.' && item != ' ' && item != '+' && item != '@')
+            {
+                sprite.ReverseY(elapsed);
+            }
+            item = m_grid[((int)(sprite.X + 11) / 8) % m_width, ((int)(sprite.Y + 11) / 8) % m_height];
+            if (item != '.' && item != ' ' && item != '+' && item != '@')
+            {
+                sprite.ReverseY(elapsed);
             }
         }
 
