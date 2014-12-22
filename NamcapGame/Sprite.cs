@@ -91,10 +91,24 @@ namespace NamcapGame
             }
         }
 
-        public void Move(float elapsed)
+        public void MoveX(float elapsed)
         {
             m_location.X += m_direction.X * Speed * elapsed;
+        }
+
+        public void MoveY(float elapsed)
+        {
             m_location.Y += m_direction.Y * Speed * elapsed;
+        }
+
+        public void ReverseX(float elapsed)
+        {
+            m_location.X += m_direction.X * Speed * -elapsed;
+        }
+
+        public void ReverseY(float elapsed)
+        {
+            m_location.Y += m_direction.Y * Speed * -elapsed;
         }
     }
 }
