@@ -34,6 +34,8 @@ namespace NamcapGame
 
         private int m_selectedPlayer = 0;
 
+        private Surface m_pcEyes;
+
         private Sprite[] m_pc;
 
         public Game()
@@ -80,6 +82,10 @@ namespace NamcapGame
                 40);
             m_npc.Image.Transparent = true;
             m_npc.Image.TransparentColor = Color.FromArgb(255, 0, 220);
+
+            m_pcEyes = new Surface(m_filesPath + m_imagesFolder + "\\pceyes.png").Convert(m_video, true, true);
+            m_pcEyes.Transparent = true;
+            m_pcEyes.TransparentColor = Color.FromArgb(255, 0, 220);
 
             m_pc = new Sprite[4];
 
@@ -173,13 +179,15 @@ namespace NamcapGame
             item = m_grid[(x / 8) % m_width, (y / 8) % m_height];
             if (item != '.' && item != ' ' && item != '+' && item != '@')
             {
-                sprite.ReverseX(elapsed);
+                sprite.X = (((x / 8) + 1) * 8) - 4;
+                //sprite.ReverseX(elapsed);
             }
             x = (int)(sprite.X + 12);
             item = m_grid[(x / 8) % m_width, (y / 8) % m_height];
             if (item != '.' && item != ' ' && item != '+' && item != '@')
             {
-                sprite.ReverseX(elapsed);
+                sprite.X = (((x / 8) - 1) * 8) - 4;
+                //sprite.ReverseX(elapsed);
             }
 
             sprite.MoveY(elapsed);
@@ -190,14 +198,15 @@ namespace NamcapGame
             item = m_grid[(x / 8) % m_width, (y / 8) % m_height];
             if (item != '.' && item != ' ' && item != '+' && item != '@')
             {
-                sprite.ReverseY(elapsed);
+                sprite.Y = (((y / 8) + 1) * 8) - 4;
+                //sprite.ReverseY(elapsed);
             }
-
             y = (int)(sprite.Y + 12);
             item = m_grid[(x / 8) % m_width, (y / 8) % m_height];
             if (item != '.' && item != ' ' && item != '+' && item != '@')
             {
-                sprite.ReverseY(elapsed);
+                sprite.Y = (((y / 8) - 1) * 8) - 4;
+                //sprite.ReverseY(elapsed);
             }
         }
 
