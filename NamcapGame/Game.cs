@@ -14,9 +14,11 @@ namespace NamcapGame
 
         private Game m_game;
 
-        private string m_path = @"..\..\..\Files\";
+        private string m_filesPath = @"..\..\..\Files\";
 
-        private string m_images = @"DebugImages";
+        private string m_imagesFolder = @"Images";
+
+        private string m_levelsFolder = @"Levels";
 
         private char[,] m_grid;
 
@@ -41,7 +43,7 @@ namespace NamcapGame
 
             // board 28w 31h
             m_grid = new char[m_width, m_height];
-            string[] data = File.ReadAllLines(m_path + "Levels\\level01.map");
+            string[] data = File.ReadAllLines(Path.Combine(m_filesPath, m_levelsFolder, "level01.map"));
 
             for (int y = 0; y < m_height; y++)
             {
@@ -56,24 +58,24 @@ namespace NamcapGame
         {
             m_tiles = new Dictionary<char, Surface>();
 
-            m_tiles.Add('[', new Surface(m_path + m_images + "\\vlinel.png").Convert(m_video, true, false));
-            m_tiles.Add(']', new Surface(m_path + m_images + "\\vliner.png").Convert(m_video, true, false));
-            m_tiles.Add('-', new Surface(m_path + m_images + "\\hlinet.png").Convert(m_video, true, false));
-            m_tiles.Add('_', new Surface(m_path + m_images + "\\hlineb.png").Convert(m_video, true, false));
-            m_tiles.Add(' ', new Surface(m_path + m_images + "\\empty.png").Convert(m_video, true, false));
-            m_tiles.Add('@', new Surface(m_path + m_images + "\\pill.png").Convert(m_video, true, false));
-            m_tiles.Add('.', new Surface(m_path + m_images + "\\pip.png").Convert(m_video, true, false));
-            m_tiles.Add('/', new Surface(m_path + m_images + "\\ctl.png").Convert(m_video, true, false));
-            m_tiles.Add('\\', new Surface(m_path + m_images + "\\ctr.png").Convert(m_video, true, false));
-            m_tiles.Add('<', new Surface(m_path + m_images + "\\cbl.png").Convert(m_video, true, false));
-            m_tiles.Add('>', new Surface(m_path + m_images + "\\cbr.png").Convert(m_video, true, false));
-            m_tiles.Add('+', new Surface(m_path + m_images + "\\hdoorb.png").Convert(m_video, true, false));
+            m_tiles.Add('[', new Surface(m_filesPath + m_imagesFolder + "\\vlinel.png").Convert(m_video, true, false));
+            m_tiles.Add(']', new Surface(m_filesPath + m_imagesFolder + "\\vliner.png").Convert(m_video, true, false));
+            m_tiles.Add('-', new Surface(m_filesPath + m_imagesFolder + "\\hlinet.png").Convert(m_video, true, false));
+            m_tiles.Add('_', new Surface(m_filesPath + m_imagesFolder + "\\hlineb.png").Convert(m_video, true, false));
+            m_tiles.Add(' ', new Surface(m_filesPath + m_imagesFolder + "\\empty.png").Convert(m_video, true, false));
+            m_tiles.Add('@', new Surface(m_filesPath + m_imagesFolder + "\\pill.png").Convert(m_video, true, false));
+            m_tiles.Add('.', new Surface(m_filesPath + m_imagesFolder + "\\pip.png").Convert(m_video, true, false));
+            m_tiles.Add('/', new Surface(m_filesPath + m_imagesFolder + "\\ctl.png").Convert(m_video, true, false));
+            m_tiles.Add('\\', new Surface(m_filesPath + m_imagesFolder + "\\ctr.png").Convert(m_video, true, false));
+            m_tiles.Add('<', new Surface(m_filesPath + m_imagesFolder + "\\cbl.png").Convert(m_video, true, false));
+            m_tiles.Add('>', new Surface(m_filesPath + m_imagesFolder + "\\cbr.png").Convert(m_video, true, false));
+            m_tiles.Add('+', new Surface(m_filesPath + m_imagesFolder + "\\hdoorb.png").Convert(m_video, true, false));
         }
 
         private void loadSprites()
         {
             m_npc = new Sprite(
-                new Surface(m_path + m_images + "\\npc.png").Convert(m_video, true, true),
+                new Surface(m_filesPath + m_imagesFolder + "\\npc.png").Convert(m_video, true, true),
                 new Point(13 * m_scale, (22 * m_scale) + 4),
                 40);
             m_npc.Image.Transparent = true;
@@ -82,28 +84,28 @@ namespace NamcapGame
             m_pc = new Sprite[4];
 
             m_pc[0] = new Sprite(
-                new Surface(m_path + m_images + "\\pc1.png").Convert(m_video, true, true),
+                new Surface(m_filesPath + m_imagesFolder + "\\pc1.png").Convert(m_video, true, true),
                 new PointF(11 * m_scale, (12 * m_scale) + 4),
                 30);
             m_pc[0].Image.Transparent = true;
             m_pc[0].Image.TransparentColor = Color.FromArgb(255, 0, 220);
 
             m_pc[1] = new Sprite(
-                new Surface(m_path + m_images + "\\pc2.png").Convert(m_video, true, true),
+                new Surface(m_filesPath + m_imagesFolder + "\\pc2.png").Convert(m_video, true, true),
                 new PointF(15 * m_scale, (12 * m_scale) + 4),
                 30);
             m_pc[1].Image.Transparent = true;
             m_pc[1].Image.TransparentColor = Color.FromArgb(255, 0, 220);
 
             m_pc[2] = new Sprite(
-                new Surface(m_path + m_images + "\\pc3.png").Convert(m_video, true, true),
+                new Surface(m_filesPath + m_imagesFolder + "\\pc3.png").Convert(m_video, true, true),
                 new PointF(11 * m_scale, (14 * m_scale) + 4),
                 30);
             m_pc[2].Image.Transparent = true;
             m_pc[2].Image.TransparentColor = Color.FromArgb(255, 0, 220);
 
             m_pc[3] = new Sprite(
-                new Surface(m_path + m_images + "\\pc4.png").Convert(m_video, true, true),
+                new Surface(m_filesPath + m_imagesFolder + "\\pc4.png").Convert(m_video, true, true),
                 new PointF(15 * m_scale, (14 * m_scale) + 4),
                 30);
             m_pc[3].Image.Transparent = true;
@@ -165,26 +167,36 @@ namespace NamcapGame
 
             sprite.MoveX(elapsed);
 
-            x = (int)(sprite.X + 8);
             y = (int)(sprite.Y + 8);
 
-            // scale to tile size and wrap
+            x = (int)(sprite.X + 4);
             item = m_grid[(x / 8) % m_width, (y / 8) % m_height];
             if (item != '.' && item != ' ' && item != '+' && item != '@')
             {
-                Console.WriteLine("X {0}", DateTime.Now.Ticks);
+                sprite.ReverseX(elapsed);
+            }
+            x = (int)(sprite.X + 12);
+            item = m_grid[(x / 8) % m_width, (y / 8) % m_height];
+            if (item != '.' && item != ' ' && item != '+' && item != '@')
+            {
                 sprite.ReverseX(elapsed);
             }
 
             sprite.MoveY(elapsed);
 
             x = (int)(sprite.X + 8);
-            y = (int)(sprite.Y + 8);
 
+            y = (int)(sprite.Y + 4);
             item = m_grid[(x / 8) % m_width, (y / 8) % m_height];
             if (item != '.' && item != ' ' && item != '+' && item != '@')
             {
-                Console.WriteLine("Y{0}", DateTime.Now.Ticks);
+                sprite.ReverseY(elapsed);
+            }
+
+            y = (int)(sprite.Y + 12);
+            item = m_grid[(x / 8) % m_width, (y / 8) % m_height];
+            if (item != '.' && item != ' ' && item != '+' && item != '@')
+            {
                 sprite.ReverseY(elapsed);
             }
         }
